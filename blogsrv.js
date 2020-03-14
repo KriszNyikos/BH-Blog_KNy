@@ -1,4 +1,8 @@
 
+const loginController = require('./controllers/loginController')
+
+const loginControllerObject = new loginController()
+
 const express = require('express')
 const app = express()
 const port = 3000
@@ -11,9 +15,10 @@ app.engine('handlebars', exphbs({
 }));
 
 app.set('view engine', 'handlebars');
-
 app.engine('handlebars', exphbs());
 
+app.use(express.urlencoded({extended: true}))
+app.use(express.json())
 app.use(express.static('public'))
 
 const blogName = 'Blog oldal'
@@ -59,10 +64,34 @@ const posts = [
 
 
 app.get('/', (req, res) => {
-    res.render('main_layout',{
+    res.render('main_layout', {
         posts: posts,
         blogName: blogName
     })
+})
+
+app.get('/login', (req, res) => {
+
+        if (req.query.error) {
+            return  res.render('loginView', {
+                error: `Error: invalid${req.query.error}`
+            })
+        }
+
+    res.render('loginView')
+})
+
+
+app.post('/login', loginControllerObject.postLogin.bind(loginControllerObject))
+
+
+app.get('/admin', (req, res)=>{
+    res.render('dashBoard')
+})
+
+
+app.get('/logout', (req, res)=>{
+    res.redirect('/login')  
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
