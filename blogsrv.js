@@ -83,6 +83,12 @@ app.get('/login', (req, res) => {
             })
         }
 
+        if (req.query.logoutMsg) {
+            return  res.render('loginView', {
+                    logOutMessage: `Logout is ${req.query.logoutMsg}`
+            })
+        }
+
     res.render('loginView')
 })
 
@@ -98,7 +104,7 @@ app.get('/admin', AuthenticatorObject.authMiddleware, (req, res)=>{
 app.get('/logout', (req, res)=>{
     let cookieName = AuthenticatorObject.deleteSession(req.cookies)
     res.clearCookie(cookieName)
-    res.redirect('/login')
+    res.redirect('/login?logoutMsg="succesfull"')
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
