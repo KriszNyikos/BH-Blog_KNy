@@ -1,11 +1,15 @@
 
 const loginController = require('./controllers/loginController')
+const {LoginController, Authenticator} = loginController
+const LoginControllerObject = new LoginController()
+const AuthenticatorObject = new Authenticator()
 
-const loginControllerObject = new loginController()
 
 const express = require('express')
 const app = express()
 const port = 3000
+const cookieParser = require('cookie-parser')
+
 
 const exphbs = require('express-handlebars');
 app.engine('handlebars', exphbs({
@@ -17,6 +21,7 @@ app.engine('handlebars', exphbs({
 app.set('view engine', 'handlebars');
 app.engine('handlebars', exphbs());
 
+app.use(cookieParser())
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 app.use(express.static('public'))
@@ -71,7 +76,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-
+        
         if (req.query.error) {
             return  res.render('loginView', {
                 error: `Error: invalid${req.query.error}`
@@ -82,16 +87,18 @@ app.get('/login', (req, res) => {
 })
 
 
-app.post('/login', loginControllerObject.postLogin.bind(loginControllerObject))
+app.post('/login', LoginControllerObject.postLogin.bind(LoginControllerObject))
 
 
-app.get('/admin', (req, res)=>{
+app.get('/admin', AuthenticatorObject.authMiddleware, (req, res)=>{
     res.render('dashBoard')
 })
 
 
 app.get('/logout', (req, res)=>{
-    res.redirect('/login')  
+    let cookieName = AuthenticatorObject.deleteSession(req.cookies)
+    res.clearCookie(cookieName)
+    res.redirect('/login')
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
