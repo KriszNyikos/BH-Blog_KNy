@@ -1,0 +1,67 @@
+<div class="container">
+    <div class="row justify-content-md-center ">
+        <div class="col-9 ">
+            <div class="row justify-content-md-center border">
+                <h1 class="col-6 border">New Post view</h1>
+            </div>
+
+            <div class="row">
+                <label class="col-3" for="title">Title</label>
+                <input class="col-9" type="text" name="title" id="title">
+            </div>
+
+            <div class="row">
+                <label class="col-3" for="title">Content</label>
+                <textarea class="col-9" name="content" id="content"></textarea>
+            </div>
+
+
+            <div class="container">
+                <div class="row">
+                    <button onclick="discard()">Discard</button>
+                    <button onclick="submit()">Publish</button>
+                </div>
+                <div>{{#if error}}{{error}}{{/if}}</div>  
+                <div class="row" style="color: red;" id="errorMsg"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function discard() {
+        window.location.pathname = '/admin'
+    }
+
+    function submit() {
+        let title = document.getElementById('title').value
+        let content = document.getElementById('content').value
+
+        console.log(title, content)
+
+        if (formCheck(title, content)) {
+            fetch(('/newPost'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: title, content: content })
+            }).then(res => window.location = res.url)
+        }
+
+    }
+
+    function formCheck(title, content) {
+        errorMessage = document.getElementById('errorMsg')
+        
+        if (!title) {
+            errorMessage.innerText = 'Title is required!'
+            return false
+        }
+
+        if (!content) {
+            errorMessage.innerText = 'Content is required!'
+            return false
+        }
+        return true
+    }
+</script>

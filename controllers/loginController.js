@@ -1,5 +1,5 @@
 const users = [
-    { email: 'admin@admin', password: 'password' }
+    { user: 'admin', password: 'password' }
 ]
 
 const sessions = {}
@@ -10,32 +10,37 @@ class Authenticator {
 
     authMiddleware(req, res, next) {
         console.log('Auth middleware running')
-        const authCookie = req.cookies[AUTH_COOKIE] // (1)
+        const authCookie = req.cookies[AUTH_COOKIE] 
         console.log(`Authentication cookie: ${authCookie}`)
-    
+
         const session = sessions[authCookie]
 
-        if (!session) { // (2)
+        if (!session) { 
             res.status(401).send('Login required')
             return
         }
         next()
     }
 
-    registerSession(email) {
+    registerSession(user) {
         let id = Math.floor(Math.random() * 10000)
-        sessions[id] = {email: email}
+        sessions[id] = { user: user }
         console.log(sessions)
         return id
     }
 
-    deleteSession(cookies){
-       let sessionId = cookies[AUTH_COOKIE] 
+    deleteSession(cookies) {
+        let sessionId = cookies[AUTH_COOKIE]
 
         if (sessions[sessionId]) {
             delete sessions[sessionId]
         }
         return AUTH_COOKIE
+    }
+
+    returnAuthor(id) {
+        console.log(id ,sessions)
+        return sessions[id].user
     }
 }
 
@@ -43,13 +48,13 @@ class LoginController {
 
     postLogin(req, res) {
 
-        let email = req.body.email
+        let user = req.body.user
         let password = req.body.password
         const auth = new Authenticator()
 
-        if (this.authenticate(email, password)) {
+        if (this.authenticate(user, password)) {
             console.log('jelszó ok')
-            const sessionId = auth.registerSession(email)
+            const sessionId = auth.registerSession(user)
             res.cookie(AUTH_COOKIE, sessionId)
             return res.redirect('/admin')
         }
@@ -58,10 +63,10 @@ class LoginController {
 
     }
 
-    authenticate(email, password) {
+    authenticate(user, password) {
         console.log('belépett')
-        console.log(email, password)
-        return users.find(user => user.email === email && user.password === password)
+        console.log(user, password)
+        return users.find(us => us.user === user && us.password === password)
     }
 }
 
