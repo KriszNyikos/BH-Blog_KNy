@@ -1,14 +1,14 @@
 <div class="container w-50 p-4 mt-4 border">
-    <form action="/login" method="POST">
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input type="email" class="form-control" id="email" name="email" >
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" name="password">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button><br>
-  {{#if error}} <div style="color: red;" class="mt-2">{{error}}</div> {{/if}}
-</form>
+  <form action="/login" method="POST">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="text" class="form-control" id="user" name="user">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" name="password">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button><br>
+    {{#if error}} <div style="color: red;" class="mt-2">{{error}}</div> {{/if}}
+  </form>
 </div>
