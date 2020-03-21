@@ -5,7 +5,7 @@ const LoginControllerObject = new LoginController()
 const AuthenticatorObject = new Authenticator()
 
 const postController = require('./controllers/postController')
-const { PostController, posts } = postController
+const { PostController} = postController
 const PostControllerObject = new PostController()
 
 
@@ -33,9 +33,9 @@ app.use(express.static('public'))
 const blogName = 'Blog oldal'
 
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
-
+   let posts = await PostControllerObject.get()
     res.render('main_layout', {
         posts: posts,
         blogName: blogName
@@ -83,8 +83,8 @@ app.post('/newPost', AuthenticatorObject.authMiddleware, (req, res) => {
 
     if (req.body.title && req.body.content) {
         let author = AuthenticatorObject.returnAuthor(req.cookies['ssid'])
-        PostControllerObject.write(req.body.title, req.body.content, author)
-        return res.redirect('/')
+        PostControllerObject.post(req.body.title, req.body.content, author)
+        return res.redirect('/admin')
     }
 
     if(!req.body.title){

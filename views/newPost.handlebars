@@ -1,29 +1,30 @@
 <div class="container">
-    <div class="row justify-content-md-center ">
-        <div class="col-9 ">
-            <div class="row justify-content-md-center border">
-                <h1 class="col-6 border">New Post view</h1>
+    <div class="row justify-content-md-center border">
+        <div class="col-8 ">
+            <div class="row justify-content-md-center">
+                <h1 class="col-6">New Post view</h1>
             </div>
-
-            <div class="row">
-                <label class="col-3" for="title">Title</label>
-                <input class="col-9" type="text" name="title" id="title">
-            </div>
-
-            <div class="row">
-                <label class="col-3" for="title">Content</label>
-                <textarea class="col-9" name="content" id="content"></textarea>
-            </div>
-
-
+            <form>
+                <div class="form-group">
+                    <label for="title">Email address</label>
+                    <input type="title" class="form-control" id="title" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" rows="3"></textarea>
+                </div>
+            </form>
             <div class="container">
                 <div class="row">
                     <button onclick="discard()">Discard</button>
                     <button onclick="submit()">Publish</button>
                 </div>
-                <div>{{#if error}}{{error}}{{/if}}</div>  
+                <div>{{#if error}}{{error}}{{/if}}</div>
                 <div class="row" style="color: red;" id="errorMsg"></div>
             </div>
+
+
+
         </div>
     </div>
 </div>
@@ -52,7 +53,7 @@
 
     function formCheck(title, content) {
         errorMessage = document.getElementById('errorMsg')
-        
+
         if (!title) {
             errorMessage.innerText = 'Title is required!'
             return false
