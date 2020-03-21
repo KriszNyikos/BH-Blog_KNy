@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="row justify-content-md-center border">
+        <div class="col-8 ">
+            <div class="row justify-content-md-center">
+                <h1 class="col-6">New Post view</h1>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="title" class="form-control" id="title" placeholder="Title">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" rows="3"></textarea>
+                </div>
+            </form>
+            <div class="container">
+                <div class="row">
+                    <button data-toggle="modal" data-target="#modal">Discard</button>
+                    <button onclick="submit()">Publish</button>
+                </div>
+                <div>{{#if error}}{{error}}{{/if}}</div>
+                <div class="row" style="color: red;" id="errorMsg"></div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Biztos benne, hogy megszakítja a folyamatot?</p> 
+        <button type="button"  class="btn btn-secondary" data-dismiss="modal">Mégse</button>
+        <button type="button"  onclick="discard()" class="btn btn-primary">Megszakítás</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+    function discard() {
+        window.location.pathname = '/admin'
+    }
+
+    function submit() {
+        let title = document.getElementById('title').value
+        let content = document.getElementById('content').value
+
+        console.log(title, content)
+
+        if (formCheck(title, content)) {
+            fetch(('/newPost'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: title, content: content })
+            }).then(res => window.location = res.url)
+        }
+
+    }
+
+    function formCheck(title, content) {
+        errorMessage = document.getElementById('errorMsg')
+
+        if (!title) {
+            errorMessage.innerText = 'Title is required!'
+            return false
+        }
+
+        if (!content) {
+            errorMessage.innerText = 'Content is required!'
+            return false
+        }
+        return true
+    }
+</script>
