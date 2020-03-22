@@ -1,13 +1,15 @@
 
-const loginController = require('./controllers/loginController')
-const { LoginController, Authenticator } = loginController
-const LoginControllerObject = new LoginController()
-const AuthenticatorObject = new Authenticator()
+const { mainLayout } = require('./controllers/rootController')
 
-const postController = require('./controllers/postController')
-const { PostController} = postController
-const PostControllerObject = new PostController()
+const { loginGet, loginPost } = require('./controllers/loginController')
+const { authMiddleware } = require('./middlewares')
 
+const { getNewPost, postNewPost } = require('./controllers/newPostController')
+
+
+const { getDashboard } = require('./controllers/adminController')
+
+const { logout } = require('./controllers/logoutController')
 
 const express = require('express')
 const app = express()
@@ -30,77 +32,18 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static('public'))
 
-const blogName = 'Blog oldal'
+app.get('/', mainLayout)
 
+app.get('/login', loginGet)
 
-app.get('/', async (req, res) => {
+app.post('/login', loginPost)
 
-   let posts = await PostControllerObject.get()
-    res.render('main_layout', {
-        posts: posts,
-        blogName: blogName
-    })
-})
+app.get('/admin', authMiddleware, getDashboard)
 
-app.get('/login', (req, res) => {
+app.get('/logout', logout)
 
-    if (req.query.error) {
-        return res.render('loginView', {
-            error: `Error: invalid${req.query.error}`
-        })
-    }
+app.get('/newPost', authMiddleware, getNewPost)
 
-    res.render('loginView')
-})
-
-
-app.post('/login', LoginControllerObject.postLogin.bind(LoginControllerObject))
-
-
-app.get('/admin', AuthenticatorObject.authMiddleware, (req, res) => {
-    res.render('dashBoard')
-})
-
-
-app.get('/logout', (req, res) => {
-    let cookieName = AuthenticatorObject.deleteSession(req.cookies)
-    res.clearCookie(cookieName)
-    res.redirect('/login')
-})
-
-app.get('/newPost', AuthenticatorObject.authMiddleware, (req, res) => {
-    if (req.query.error) {
-        return res.render('newPost', {
-            error: `Error: ${req.query.error} is required`
-        })
-    }
-    res.render('newPost')
-})
-
-app.post('/newPost', AuthenticatorObject.authMiddleware, (req, res) => {
-
-    let error= ""
-
-    if (req.body.title && req.body.content) {
-        let author = AuthenticatorObject.returnAuthor(req.cookies['ssid'])
-        PostControllerObject.post(req.body.title, req.body.content, author)
-        return res.redirect('/admin')
-    }
-
-    if(!req.body.title){
-        return res.redirect('/newPost?error="Title"')
-    }
-
-    if(!req.body.title){
-        return res.redirect('/newPost?error="Content"')
-    }
-
-    res.render('main_layout', {
-        posts: posts,
-        blogName: blogName,
-        error: error
-    })
-
-})
+app.post('/newPost', authMiddleware, postNewPost)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

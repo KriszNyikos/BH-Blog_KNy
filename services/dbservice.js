@@ -1,3 +1,6 @@
+//const { getAllPost, insertNewPost } = require('../modell/DAO')
+
+
 const sqlite3 = require('sqlite3').verbose();
 
 let db = new sqlite3.Database('/home/krisztiandev/Braining hub/BH-Blog_KNy/modell/postsDB.db', (err) => {
@@ -8,8 +11,7 @@ let db = new sqlite3.Database('/home/krisztiandev/Braining hub/BH-Blog_KNy/model
 });
 
 
-class DbService {
-    readData() {
+function readData() {
         return new Promise(function (resolve, reject){
             db.serialize(function () {
               db.all('SELECT rowid, author, date, title, content FROM posts', function (err, result) {
@@ -24,7 +26,7 @@ class DbService {
 
     }
 
-    writeData(author, date, title, content) {
+function writeData(author, date, title, content) {
         db.serialize(function () {
             db.run(`INSERT INTO posts(author, date, title, content) VALUES (?,?,?,?)`, [author, date, title, content], function (err) {
                 if (err) {
@@ -34,8 +36,8 @@ class DbService {
             })
         })
     }
-}
+
 
 module.exports = {
-    DbService: DbService
+    readData, writeData
 }
