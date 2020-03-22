@@ -13,8 +13,10 @@ class DbService {
         return new Promise(function (resolve, reject){
             db.serialize(function () {
               db.all('SELECT rowid, author, date, title, content FROM posts', function (err, result) {
+                console.log(result)
                     if (err != null) {
                         // hibakezelés
+                        
                         reject(err)
                     }
                     resolve(result)
