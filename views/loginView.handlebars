@@ -1,14 +1,60 @@
 <div class="container w-50 p-4 mt-4 border">
-  <form action="/login" method="POST">
+  <form action="/login" method="POST" class="needs-validation" novalidate>
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="text" class="form-control" id="user" name="user">
+      <input type="text" class="form-control" id="user" name="user" required>
+      <div class="invalid-feedback">
+        Kérlek addj meg egy falhasználónevet
+      </div>
     </div>
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" class="form-control" id="password" name="password">
+      <input type="password" class="form-control" id="password" name="password" required>
+      <div class="invalid-feedback">
+        Kérlek adj meg egy jelszót
+      </div>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button><br>
-    {{#if error}} <div style="color: red;" class="mt-2">{{error}}</div> {{/if}}
+    <div style="color: red;" class="mt-2" id='feedback'>{{#if error}} {{error}} {{/if}}</div>
   </form>
 </div>
+
+<script>
+  (function () {
+    window.addEventListener('load', function () {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      let forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      console.log(forms)
+      let validation = Array.prototype.filter.call(forms, function (form) {
+        form.addEventListener('submit', function (event) {
+          let password = document.getElementById('password').value;
+          let username = document.getElementById('user').value;
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+          let feedback = document.getElementById('feedback');
+          console.log(username, password)
+               let text = ''
+                if(!password){
+                  text = 'password'
+                }
+        
+                if(!username){
+                  text = 'username'
+                }
+        
+                if(!password && !username){
+                  text = 'username and password'
+                }
+                
+                feedback.innerText = `Error: missing ${text}`
+
+        }, false);
+      });
+    }, false);
+  })();
+</script>
+</script>

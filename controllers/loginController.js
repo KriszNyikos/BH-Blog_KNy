@@ -51,7 +51,6 @@ class LoginController {
         let user = req.body.user
         let password = req.body.password
         const auth = new Authenticator()
-
         if (this.authenticate(user, password)) {
             console.log('jelszó ok')
             const sessionId = auth.registerSession(user)

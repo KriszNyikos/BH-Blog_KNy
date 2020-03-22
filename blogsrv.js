@@ -49,6 +49,10 @@ app.get('/login', (req, res) => {
         error = `Error: invalid${req.query.error}`
     }
 
+    if(req.body){
+        
+    }
+
     res.render('loginView', {
         error: error
     })
