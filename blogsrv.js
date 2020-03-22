@@ -44,13 +44,14 @@ app.get('/', async (req, res) => {
 
 app.get('/login', (req, res) => {
 
+    let error = ""
     if (req.query.error) {
-        return res.render('loginView', {
-            error: `Error: invalid${req.query.error}`
-        })
+        error = `Error: invalid${req.query.error}`
     }
 
-    res.render('loginView')
+    res.render('loginView', {
+        error: error
+    })
 })
 
 
