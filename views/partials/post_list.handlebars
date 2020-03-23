@@ -1,7 +1,10 @@
 {{#each posts}}
-    <div class="jumbotron m-3">
-        <div class="d-flex justify-content-between"><p>{{this.author}}</p> <p>{{this.date}}</p></div>
-        <h2>{{this.title}}</h2>
-        <p class="lead">{{this.content}}</p>
+<div class="card mt-2">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <a href="http://localhost:3000/readPostView/{{this.rowid}}">{{this.title}} (by:{{this.author}})</a>
+            <div>{{this.date}}</div>
+        </div>
     </div>
+</div>
 {{/each}}

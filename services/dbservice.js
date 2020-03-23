@@ -11,7 +11,7 @@ let db = new sqlite3.Database('/home/krisztiandev/Braining hub/BH-Blog_KNy/model
 });
 
 
-function readData() {
+function readAllPosts() {
         return new Promise(function (resolve, reject){
             db.serialize(function () {
               db.all('SELECT rowid, author, date, title, content FROM posts', function (err, result) {
@@ -37,7 +37,24 @@ function writeData(author, date, title, content) {
         })
     }
 
+function readSinglePost(id){
+    return new Promise( function (resolve, reject){
+        db.serialize(function(){
+            db.all(`SELECT rowid as id, author, date, title, content FROM posts WHERE id = ${id}`,function (err, result){
+
+                if (err != null) {
+                    // hibakezelés
+                    reject(err)
+                }
+                let  post = result.find(p => p)
+               // console.log(post)
+                resolve(post)
+            })
+        })
+    })
+}
+
 
 module.exports = {
-    readData, writeData
+    readAllPosts, writeData, readSinglePost
 }
