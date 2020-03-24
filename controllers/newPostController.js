@@ -18,7 +18,7 @@ function postNewPost (req, res) {
 
     if (req.body.title && req.body.content) {
         let author = returnAuthor(req.cookies[AUTH_COOKIE])
-        insertNewPost(req.body.title, req.body.content, author)
+        insertNewPost(req.body.title, req.body.content, author, req.body.slug)
         return res.redirect('/admin')
     }
 
@@ -28,6 +28,10 @@ function postNewPost (req, res) {
 
     if(!req.body.content){
         return res.redirect('/newPost?error="Content"')
+    }
+
+    if(!req.body.content){
+        return res.redirect('/newPost?error="Slug"')
     }
 
     res.render('main_layout', {
