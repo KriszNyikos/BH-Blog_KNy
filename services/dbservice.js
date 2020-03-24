@@ -26,9 +26,9 @@ function readAllPosts() {
 
     }
 
-function writeData(author, date, title, content) {
+function writeData(author, date, title, content, slug) {
         db.serialize(function () {
-            db.run(`INSERT INTO posts(author, date, title, content) VALUES (?,?,?,?)`, [author, date, title, content], function (err) {
+            db.run(`INSERT INTO posts(author, date, title, content) VALUES (?,?,?,?)`, [author, date, title, content, slug], function (err) {
                 if (err) {
                     return console.log(err.message);
                 }
@@ -54,7 +54,26 @@ function readSinglePost(id){
     })
 }
 
+function readSinglePostSlug(slug){
+   // console.log(slug)
+    return new Promise( function (resolve, reject){
+        db.serialize(function(){
+            db.all(`SELECT author, date, title, content, slug FROM posts WHERE slug = '${slug}'`,function (err, result){
+
+                if (err != null) {
+                    // hibakezelés
+                    reject(err)
+                }
+               // console.log(result)
+                let  post = result.find(p => p)
+               // console.log(post)
+                resolve(post)
+            })
+        })
+    })
+}
+
 
 module.exports = {
-    readAllPosts, writeData, readSinglePost
+    readAllPosts, writeData, readSinglePost, readSinglePostSlug
 }
