@@ -1,18 +1,26 @@
-const {readData, writeData} = require('./dbservice')
+const { readAllPosts, writeData, readSinglePost } = require('./dbservice')
 
-function post(title, content, author){
+function insertNewPost(title, content, author) {
     let date = new Date()
     date = `${date.getFullYear()} ${date.getMonth()}. ${date.getDay()}.`
 
     writeData(author, date, title, content)
 }
 
-function get(){
-    return new Promise(function (resolve, reject){
-        let datas = readData()
+function getAllPost() {
+    return new Promise(function (resolve, reject) {
+        let datas = readAllPosts()
         datas.then(array => resolve(array))
     })
-    
+
 }
 
-module.exports = {get, post}
+function getPost(id) {
+    return new Promise(function (resolve, reject) {
+        let post = readSinglePost(id)
+        post.then(p => resolve(p))
+      //  console.log(post)
+    })
+}
+
+module.exports = { getAllPost, insertNewPost, getPost }

@@ -1,15 +1,17 @@
+const { authMiddleware } = require('./middlewares')
 
 const { mainLayout } = require('./controllers/rootController')
 
 const { loginGet, loginPost } = require('./controllers/loginController')
-const { authMiddleware } = require('./middlewares')
-
-const { getNewPost, postNewPost } = require('./controllers/newPostController')
-
 
 const { getDashboard } = require('./controllers/adminController')
 
 const { logout } = require('./controllers/logoutController')
+
+const { getNewPost, postNewPost } = require('./controllers/newPostController')
+
+const {getReadPost} =require('./controllers/postViewController')
+
 
 const express = require('express')
 const app = express()
@@ -45,5 +47,7 @@ app.get('/logout', logout)
 app.get('/newPost', authMiddleware, getNewPost)
 
 app.post('/newPost', authMiddleware, postNewPost)
+
+app.get('/readPostView/:id', getReadPost)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

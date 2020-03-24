@@ -1,5 +1,5 @@
 const {returnAuthor, AUTH_COOKIE} = require('../services/authenticationService')
-const {get, post} = require('../services/blogPostService')
+const {insertNewPost} = require('../services/blogPostService')
 const {blogName} = require('../config')
 
 
@@ -18,7 +18,7 @@ function postNewPost (req, res) {
 
     if (req.body.title && req.body.content) {
         let author = returnAuthor(req.cookies[AUTH_COOKIE])
-        post(req.body.title, req.body.content, author)
+        insertNewPost(req.body.title, req.body.content, author)
         return res.redirect('/admin')
     }
 
