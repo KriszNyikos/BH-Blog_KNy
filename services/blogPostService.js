@@ -4,7 +4,7 @@ function insertNewPost(title, content, author, slug) {
     let date = new Date()
     date = `${date.getFullYear()} ${date.getMonth()+1}. ${date.getDate()}.`
     console.log(date)
-    writeData(author, date, title, content)
+    writeData(author, date, title, content, slug)
 }
 
 function getAllPost() {

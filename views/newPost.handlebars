@@ -49,7 +49,7 @@
             fetch(('/newPost'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: title, content: content })
+                body: JSON.stringify({ title: title, content: content, slug:slug })
             }).then(res => window.location = res.url)
         }
 

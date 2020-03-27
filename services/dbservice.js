@@ -28,7 +28,7 @@ function readAllPosts() {
 
 function writeData(author, date, title, content, slug) {
         db.serialize(function () {
-            db.run(`INSERT INTO posts(author, date, title, content) VALUES (?,?,?,?)`, [author, date, title, content, slug], function (err) {
+            db.run(`INSERT INTO posts(author, date, title, content, slug) VALUES (?,?,?,?,?)`, [author, date, title, content, slug], function (err) {
                 if (err) {
                     return console.log(err.message);
                 }
@@ -47,7 +47,7 @@ function readSinglePost(id){
                     reject(err)
                 }
                 let  post = result.find(p => p)
-               // console.log(post)
+                console.log(post)
                 resolve(post)
             })
         })
@@ -66,7 +66,7 @@ function readSinglePostSlug(slug){
                 }
                // console.log(result)
                 let  post = result.find(p => p)
-               // console.log(post)
+                console.log(post)
                 resolve(post)
             })
         })
