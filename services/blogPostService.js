@@ -1,34 +1,33 @@
-const { readAllPosts, writeData, readSinglePost, readSinglePostSlug } = require('./dbservice')
+const DbService = require("./dbservice");
 
-function insertNewPost(title, content, author, slug) {
-    let date = new Date()
-    date = `${date.getFullYear()} ${date.getMonth()+1}. ${date.getDate()}.`
-    console.log(date)
-    writeData(author, date, title, content, slug)
-}
+module.exports = class BlogPostService {
+  static insertNewPost(title, content, author, slug) {
+    let date = new Date();
+    date = `${date.getFullYear()} ${date.getMonth() + 1}. ${date.getDate()}.`;
+    console.log(date);
+    DbService.writeNewData(author, date, title, content, slug);
+  }
 
-function getAllPost() {
-    return new Promise(function (resolve, reject) {
-        let datas = readAllPosts()
-        datas.then(array => resolve(array))
-    })
+  static getEveryPost() {
+    return new Promise(function(resolve, reject) {
+      let datas = DbService.readAllPost();
+      datas.then(array => resolve(array));
+    });
+  }
 
-}
-
-function getPostId(id) {
-    return new Promise(function (resolve, reject) {
-        let post = readSinglePost(id)
-        post.then(p => resolve(p))
+  static getPostWithId(id) {
+    return new Promise(function(resolve, reject) {
+      let post = DbService.readSinglePostWithId(id);
+      post.then(p => resolve(p));
       //  console.log(post)
-    })
-}
+    });
+  }
 
-function getPostSlug(slug) {
-    return new Promise(function (resolve, reject) {
-        let post = readSinglePostSlug(slug)
-        post.then(p => resolve(p))
+  static getPostWithSlug(slug) {
+    return new Promise(function(resolve, reject) {
+      let post = DbService.readSinglePostWithSlug(slug);
+      post.then(p => resolve(p));
       //  console.log(post)
-    })
-}
-
-module.exports = { getAllPost, insertNewPost, getPostId, getPostSlug }
+    });
+  }
+};

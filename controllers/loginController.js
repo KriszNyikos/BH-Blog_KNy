@@ -1,33 +1,28 @@
-const { registerSession, authenticate, AUTH_COOKIE } = require('../services/authenticationService')
-const {blogName} = require('../config')
+const AuthenticationService = require("../services/authenticationService");
+const { blogName, AUTH_COOKIE } = require("../config.json");
 
-function loginPost(req, res) {
+module.exports = class LoginController {
+  static post(req, res) {
+    let user = req.body.user;
+    let password = req.body.password;
 
-    let user = req.body.user
-    let password = req.body.password
-
-    if (authenticate(user, password)) {
-        console.log('jelszó rendben')
-        const sessionId = registerSession(user)
-        res.cookie(AUTH_COOKIE, sessionId)
-        return res.redirect('/admin')
+    if (AuthenticationService.userValidator(user, password)) {
+      console.log("jelszó rendben");
+      const sessionId = AuthenticationService.registerSession(user);
+      res.cookie(AUTH_COOKIE, sessionId);
+      return res.redirect("/admin");
     }
-    console.log(`${user} számára belépés megtagadva`)
-    res.redirect('/login?error="credentials"')
+    console.log(`${user} számára belépés megtagadva`);
+    res.redirect('/login?error="credentials"');
+  }
 
-}
-
-function loginGet(req, res) {
-
+  static get(req, res) {
     if (req.query.error) {
-        return res.render('loginView', {
-            error: `Error: invalid${req.query.error}`
-        })
+      return res.render("loginView", {
+        error: `Error: invalid${req.query.error}`,
+        blogName
+      });
     }
-    res.render('loginView')
-
-}
-
-module.exports = {
-    loginGet, loginPost
-}
+    res.render("loginView");
+  }
+};

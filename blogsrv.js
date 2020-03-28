@@ -1,14 +1,14 @@
-const { authMiddleware } = require('./middlewares')
+const {sessionValidator}= require('./middlewares')
 
-const { mainLayout } = require('./controllers/rootController')
+const {getAllPost} = require('./controllers/rootController')
 
-const { loginGet, loginPost } = require('./controllers/loginController')
+const {get, post}= require('./controllers/loginController')
 
-const { getDashboard } = require('./controllers/adminController')
+const {getDashboard} = require('./controllers/adminController')
 
-const { logout } = require('./controllers/logoutController')
+const {logout} = require('./controllers/logoutController')
 
-const { getNewPost, postNewPost } = require('./controllers/newPostController')
+const {getNewPost, postNewPost}= require('./controllers/newPostController')
 
 const {getReadPost} =require('./controllers/postViewController')
 
@@ -34,20 +34,20 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static('public'))
 
-app.get('/', mainLayout)
+app.get('/', getAllPost)
 
-app.get('/login', loginGet)
+app.get('/login', get)
 
-app.post('/login', loginPost)
+app.post('/login', post)
 
-app.get('/admin', authMiddleware, getDashboard)
+app.get('/admin', sessionValidator, getDashboard)
 
 app.get('/logout', logout)
 
-app.get('/newPost', authMiddleware, getNewPost)
+app.get('/newPost', sessionValidator, getNewPost)
 
-app.post('/newPost', authMiddleware, postNewPost)
+app.post('/newPost', sessionValidator, postNewPost)
 
-app.get('/readPostView/:id', getReadPost)
+app.get('/postView/:id', getReadPost)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

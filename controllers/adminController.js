@@ -1,7 +1,11 @@
-const {blogName} = require('../config')
+const {blogName} = require('../config.json')
+// A blog nevét megjeleníteni  Handlebars-ban
 
-function getDashboard(req, res){
-    res.render('dashBoard')
+
+module.exports = class AdminController {
+   static getDashboard(req, res){
+        res.render('dashBoard',{
+            blogName
+        })
+    }
 }
-
-module.exports = {getDashboard}

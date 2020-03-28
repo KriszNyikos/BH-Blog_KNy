@@ -1,11 +1,11 @@
-const {blogName} = require('../config')
+const { blogName } = require("../config");
 
-const {deleteSession} = require('../services/authenticationService')
+const AuthenticationService = require("../services/authenticationService");
 
-function logout(req, res) {
-    let cookieName = deleteSession(req.cookies)
-    res.clearCookie(cookieName)
-    res.redirect('/login')
-}
-
-module.exports = {logout}
+module.exports = class LogoutController {
+  static logout(req, res) {
+    let cookieName = AuthenticationService.deleteSession(req.cookies);
+    res.clearCookie(cookieName);
+    res.redirect("/login");
+  }
+};

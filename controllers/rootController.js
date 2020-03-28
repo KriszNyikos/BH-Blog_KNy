@@ -1,13 +1,12 @@
-const {getAllPost} = require('../services/blogPostService')
-const {blogName} = require('../config')
+const BlogPostService = require("../services/blogPostService");
+const { blogName } = require("../config.json");
 
-async function mainLayout (req, res) {
-
-    let posts = await getAllPost()
-     res.render('main_layout', {
-         posts: posts,
-         blogName: blogName
-     })
- }
-
- module.exports = {mainLayout}
+module.exports = class RootController {
+  static async getAllPost(req, res) {
+    let posts = await BlogPostService.getEveryPost();
+    res.render("main_layout", {
+      posts: posts,
+      blogName
+    });
+  }
+};

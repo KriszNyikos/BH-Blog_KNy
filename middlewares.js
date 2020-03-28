@@ -1,16 +1,18 @@
-const {sessionFind, AUTH_COOKIE} = require('./services/authenticationService')
+const {sessionFind} = require('./services/authenticationService')
 
-function authMiddleware(req, res, next) {
-    console.log('Auth middleware running')
-    const authCookie = req.cookies[AUTH_COOKIE]
-    console.log(`Authentication cookie: ${authCookie}`)
+const {AUTH_COOKIE} = require('./config.json')
 
-    if (!sessionFind(authCookie)) {
-        return res.status(401).send('Login required')
+module.exports = class AuthMiddleware {
+
+   static sessionValidator(req, res, next) {
+        console.log('Auth middleware running')
+        const authCookie = req.cookies[AUTH_COOKIE]
+        console.log(`Authentication cookie: ${authCookie}`)
+    
+        if (!sessionFind(authCookie)) {
+            return res.status(401).send('Login required')
+        }
+        next()
     }
-    next()
-}
 
-module.exports ={
-    authMiddleware
 }
