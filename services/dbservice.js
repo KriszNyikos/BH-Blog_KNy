@@ -1,87 +1,24 @@
-//const { getAllPost, insertNewPost } = require('../modell/DAO')
-
-const sqlite3 = require("sqlite3").verbose();
-
-let db = new sqlite3.Database(
-  "/home/krisztiandev/Braining hub/BH-Blog_KNy/modell/postsDB.db",
-  err => {
-    if (err) {
-      return console.error(err.message);
-    }
-    console.log("Connected to the postsDB database.");
-  }
-);
+const DAO = require('../modell/DAO')
 
 module.exports = class DbService {
-  static readAllPost() {
-    return new Promise(function(resolve, reject) {
-      db.serialize(function() {
-        db.all(
-          "SELECT rowid, author, date, title, content FROM posts",
-          function(err, result) {
-            if (err != null) {
-              // hibakezelés
-              reject(err);
-            }
-            resolve(result);
-          }
-        );
-      });
-    });
-  }
 
-  static writeNewData(author, date, title, content, slug) {
-    db.serialize(function() {
-      db.run(
-        `INSERT INTO posts(author, date, title, content, slug) VALUES (?,?,?,?,?)`,
-        [author, date, title, content, slug],
-        function(err) {
-          if (err) {
-            return console.log(err.message);
-          }
-          console.log(`A row has been inserted with rowid ${this.lastID}`);
-        }
-      );
-    });
+  static writeNewData(data) {
+    const {author, date, title, content, slug} = data
+    DAO.InsertNewData({author, date, title, content, slug})
   }
 
   static readSinglePostWithId(id) {
     return new Promise(function(resolve, reject) {
-      db.serialize(function() {
-        db.all(
-          `SELECT rowid as id, author, date, title, content FROM posts WHERE id = ${id}`,
-          function(err, result) {
-            if (err != null) {
-              // hibakezelés
-              reject(err);
-            }
-            let post = result.find(p => p);
-           // console.log(post);
-            resolve(post);
-          }
-        );
-      });
+     let post = DAO.getDataId(id)
+      post.then(p => resolve(p)).catch(err => reject(err))
     });
   }
 
-  static readSinglePostWithSlug(slug) {
+  static async readSinglePostWithSlug(slug) {
     // console.log(slug)
     return new Promise(function(resolve, reject) {
-      db.serialize(function() {
-        db.all(
-          `SELECT author, date, title, content, slug FROM posts WHERE slug = '${slug}'`,
-          function(err, result) {
-            if (err != null) {
-              // hibakezelés
-              reject(err);
-            }
-            // console.log(result)
-            let post = result.find(p => p);
-            console.log(post);
-            resolve(post);
-          }
-        );
-      });
+      let post = DAO.getDataSlug(slug)
+      post.then(p => resolve(p)).catch(err => reject(err))
     });
   }
 };

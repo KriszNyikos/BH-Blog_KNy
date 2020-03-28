@@ -5,7 +5,7 @@ module.exports = class RootController {
   static async getAllPost(req, res) {
     let posts = await BlogPostService.getEveryPost();
     res.render("main_layout", {
-      posts: posts,
+      posts,
       blogName
     });
   }
