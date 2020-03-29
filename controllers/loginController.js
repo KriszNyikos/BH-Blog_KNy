@@ -17,12 +17,20 @@ module.exports = class LoginController {
   }
 
   static get(req, res) {
+    
     if (req.query.error) {
       return res.render("loginView", {
         error: `Error: invalid${req.query.error}`,
         blogName
       });
     }
+
+    if (req.query.logoutMsg) {
+      return  res.render('loginView', {
+              logOutMessage: `Logout is ${req.query.logoutMsg}`
+      })
+  }
+
     res.render("loginView");
   }
 };

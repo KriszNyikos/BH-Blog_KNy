@@ -6,6 +6,6 @@ module.exports = class LogoutController {
   static logout(req, res) {
     let cookieName = AuthenticationService.deleteSession(req.cookies);
     res.clearCookie(cookieName);
-    res.redirect("/login");
+    res.redirect('/login?logoutMsg="succesfull"')
   }
 };
