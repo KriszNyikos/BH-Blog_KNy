@@ -2,60 +2,46 @@
     <div class="row justify-content-md-center">
         <div class="col-8 ">
             <div class="row justify-content-md-center">
-                <h1 class="col-6">New Post view</h1>
+                <h1 class="col-6">{{header}}</h1>
             </div>
-            <form>
+            <form  {{#if editor}} action='/editPost/{{post.id}}' {{else}} action='/newPost' {{/if}} onsubmit='formCheck()' method='POST'>
+                <input type="hidden" name='id' value='{{post.id}}'>
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="Title">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Title" {{#if post.title}} value="{{post.title}}" {{/if}}>
                 </div>
                 <div class="form-group">
                     <label for="title">Slug</label>
-                    <input type="text" class="form-control" id="slug" placeholder="lorem-ipsum">
+                    <input type="text" class="form-control" id="slug" name="slug" placeholder="lorem-ipsum" {{#if post.slug}} value="{{post.slug}}" {{/if}}>
                 </div>
                 <div class="form-group">
                     <label for="content">Content</label>
-                    <textarea class="form-control" id="content" rows="3"></textarea>
+                    <textarea class="form-control" id="content" name="content" rows="10">{{post.content}}</textarea>
                 </div>
-            </form>
-            <div class="container">
-                <div class="row">
-                    <button onclick="discard()">Discard</button>
-                    <button onclick="submit()">Publish</button>
+                <div class="container">
+                <div class="row justify-content-start">
+                    <a class='btn btn-secondary'{{#if editor}} href="/adminPostList" {{else}} href="/admin" {{/if}}>Discard</a>
+                    <button class='btn btn-secondary ml-2'>{{#if editor}} Edit {{else}} Publish {{/if}}</button>
                 </div>
                 <div>{{#if error}}{{error}}{{/if}}</div>
                 <div class="row" style="color: red;" id="errorMsg"></div>
             </div>
-
-
-
+            </form>
         </div>
     </div>
 </div>
 
 <script>
 
-    function discard() {
-        window.location.pathname = '/admin'
-    }
 
-    function submit() {
-        let title = document.getElementById('title').value
-        let content = document.getElementById('content').value
-        let slug = document.getElementById('slug').value
-        console.log(title, content)
 
-        if (formCheck(title, content, slug)) {
-            fetch(('/newPost'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: title, content: content, slug:slug })
-            }).then(res => window.location = res.url)
-        }
 
-    }
+function formCheck() {
+    let title = document.getElementById('title').value
+    let content = document.getElementById('content').value
+    let slug = document.getElementById('slug').value
 
-    function formCheck(title, content, slug) {
+
         let errorMessage = document.getElementById('errorMsg')
         errorMessage.innerText = ''
         if (!title || !slug || !content) {
@@ -86,8 +72,13 @@
 
 
             }
+            event.preventDefault();
+            
             return false
         }
         return true
     }
+
+
+    
 </script>

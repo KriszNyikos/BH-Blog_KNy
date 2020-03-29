@@ -1,17 +1,14 @@
 const {sessionValidator}= require('./middlewares')
 
-const {getAllPost} = require('./controllers/rootController')
-
 const {get, post}= require('./controllers/loginController')
 
-const {getDashboard} = require('./controllers/adminController')
+const {renderDashboard, renderAdminPostList} = require('./controllers/adminController')
 
 const {logout} = require('./controllers/logoutController')
 
-const {getNewPost, postNewPost}= require('./controllers/newPostController')
+const {getNewPost, postNewPost, renderPostEditView, getAllPost, updateBlogPost}= require('./controllers/BlogPostController')
 
 const {getReadPost} =require('./controllers/postViewController')
-
 
 const express = require('express')
 const app = express()
@@ -40,7 +37,7 @@ app.get('/login', get)
 
 app.post('/login', post)
 
-app.get('/admin', sessionValidator, getDashboard)
+app.get('/admin', sessionValidator, renderDashboard)
 
 app.get('/logout', logout)
 
@@ -48,6 +45,12 @@ app.get('/newPost', sessionValidator, getNewPost)
 
 app.post('/newPost', sessionValidator, postNewPost)
 
+app.get('/editpost/:id', sessionValidator, renderPostEditView)
+
+app.post('/editpost/:id', sessionValidator, updateBlogPost)
+
 app.get('/postView/:id', getReadPost)
+
+app.get('/adminPostList', sessionValidator, renderAdminPostList)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

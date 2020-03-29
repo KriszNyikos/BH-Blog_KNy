@@ -1,5 +1,4 @@
-const DbService = require("./dbservice");
-const DAO = require('../modell/DAO')
+const BlogPostRepository = require("../modell/blogPostRepository");
 
 module.exports = class BlogPostService {
 
@@ -7,29 +6,24 @@ module.exports = class BlogPostService {
     let date = new Date();
     date = `${date.getFullYear()} ${date.getMonth() + 1}. ${date.getDate()}.`;
     console.log(date);
-    DbService.writeNewData({author, date, title, content, slug});
+    BlogPostRepository.insertNewData({ author, date, title, content, slug });
   }
 
-  static async getEveryPost() {
-      return new Promise(function(resolve, reject) {
-        let datas = DAO.getAllData();
-        datas.then(array => resolve(array))
-      });
+  static updatePost(data) {
+    let {id, title, content, slug, author } = data
+    BlogPostRepository.updateData({id, title, content, slug, author });
+  }
+
+
+  static getEveryPost() {
+    return BlogPostRepository.getAllData();
   }
 
   static getPostWithId(id) {
-    return new Promise(function(resolve, reject) {
-      let post = DbService.readSinglePostWithId(id);
-      post.then(p => resolve(p));
-      //  console.log(post)
-    });
+    return BlogPostRepository.getDataId(id);
   }
 
   static getPostWithSlug(slug) {
-    return new Promise(function(resolve, reject) {
-      let post = DbService.readSinglePostWithSlug(slug);
-      post.then(p => resolve(p));
-      //  console.log(post)
-    });
+    return BlogPostRepository.getDataSlug(slug);
   }
 };
