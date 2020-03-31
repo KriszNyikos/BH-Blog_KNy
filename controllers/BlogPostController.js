@@ -1,10 +1,28 @@
-const AuthenticationService = require("../services/authenticationService");
-const BlogPostService = require("../services/blogPostService");
+const BlogPost = require('../modell/BlogPost')
 const { AUTH_COOKIE, blogName } = require("../config");
 
 module.exports = class BlogPostController {
+  constructor(authenticationService, blogPostService) {
+    this.authenticationService = authenticationService,
+      this.blogPostService = blogPostService
+  }
 
-  static getNewPost(req, res) {
+  async renderPostView(req, res) {
+    let post
+    if (Number(req.params.id)) {
+      //    console.log('Az ID szám')
+      post = await this.blogPostService.findPostById(req.params.id)
+    } else {
+      post = await this.blogPostService.findPostBySlug(req.params.id)
+    }
+    if (!post) {
+      post = { title: 'A keresett tartalom nem található' }
+    }
+
+    res.render('readPostView', { post, blogName })
+  }
+
+  renderNewPostView(req, res) {
     let error = req.query.error ? `Error: ${req.query.error} is required` : null
     res.render("editPost", {
       error,
@@ -12,17 +30,19 @@ module.exports = class BlogPostController {
     });
   }
 
-  static postNewPost(req, res) {
+  saveBlogPost(req, res) {
     let error = "";
 
     if (req.body.title && req.body.content) {
-      let author = AuthenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
-      BlogPostService.insertNewPost(
-        req.body.title,
-        req.body.content,
-        author,
-        req.body.slug
-      );
+
+      let insertPost = new BlogPost()
+
+      insertPost.author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
+      insertPost.title = req.body.title,
+      insertPost.content = req.body.content,
+      insertPost.slug = req.body.slug
+      //console.log(insertPost)
+      this.blogPostService.insertNewPost(insertPost);
       return res.redirect("/admin");
     }
 
@@ -31,7 +51,7 @@ module.exports = class BlogPostController {
     }
 
     if (!req.body.content) {
-      return res.redirect('/newPost?error="Content"');
+      return res.redirect('/new-post?error="Content"');
     }
 
     if (!req.body.content) {
@@ -41,21 +61,17 @@ module.exports = class BlogPostController {
     res.redirect('/');
   }
 
-  static updateBlogPost(req, res) {
-    let error = "";
+  updateBlogPost(req, res) {
 
     if (req.body.title && req.body.content) {
-      let author = AuthenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
-      BlogPostService.updatePost(
-        {
-          id: req.body.id,
-          title: req.body.title,
-          content: req.body.content,
-          author,
-          slug: req.body.slug
-        }
+      let insertPost = new BlogPost()
+      insertPost.id = req.body.id
+      insertPost.author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
+      insertPost.title = req.body.title,
+      insertPost.content = req.body.content,
+      insertPost.slug = req.body.slug
 
-      );
+      this.blogPostService.updatePost(insertPost);
       return res.redirect("/admin");
     }
 
@@ -74,8 +90,8 @@ module.exports = class BlogPostController {
     res.redirect('/adminPostList');
   }
 
-  static async renderPostEditView(req, res) {
-    let post = await BlogPostService.getPostWithId(req.params.id)
+  async renderPostEditView(req, res) {
+    let post = await this.blogPostService.findPostById(req.params.id)
     console.log(post)
     res.render('editPost', {
       header: 'Edit Post View',
@@ -85,8 +101,8 @@ module.exports = class BlogPostController {
     })
   }
 
-  static async getAllPost(req, res) {
-    let posts = await BlogPostService.getEveryPost();
+  async renderMainLayout(req, res) {
+    let posts = await this.blogPostService.findAllPost();
     res.render("main_layout", {
       posts,
       blogName

@@ -4,7 +4,7 @@
             <div class="row justify-content-md-center">
                 <h1 class="col-6">{{header}}</h1>
             </div>
-            <form  {{#if editor}} action='/editPost/{{post.id}}' {{else}} action='/newPost' {{/if}} onsubmit='formCheck()' method='POST'>
+            <form  {{#if editor}} action='/edit-post/{{post.id}}' {{else}} action='/new-post' {{/if}} onsubmit='formCheck()' method='POST'>
                 <input type="hidden" name='id' value='{{post.id}}'>
                 <div class="form-group">
                     <label for="title">Title</label>
@@ -20,21 +20,34 @@
                 </div>
                 <div class="container">
                 <div class="row justify-content-start">
-                    <a class='btn btn-secondary'{{#if editor}} href="/adminPostList" {{else}} href="/admin" {{/if}}>Discard</a>
+                    <a data-toggle="modal" class='btn btn-secondary text-light' data-target="#modal"> Discard </a>
                     <button class='btn btn-secondary ml-2'>{{#if editor}} Edit {{else}} Publish {{/if}}</button>
                 </div>
-                <div>{{#if error}}{{error}}{{/if}}</div>
-                <div class="row" style="color: red;" id="errorMsg"></div>
+                {{#if error}}<div class="row" style="color: red;" id="errorMsg">{{error}}</div>{{/if}}
             </div>
             </form>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Biztos, hogy megszakítja a folyamatot</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Mégse</button>
+        <a class='btn btn-primary'{{#if editor}} href="/admin-post-list" {{else}} href="/admin" {{/if}}> Megszakítás </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-
-
-
 
 function formCheck() {
     let title = document.getElementById('title').value

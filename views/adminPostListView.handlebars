@@ -14,12 +14,12 @@
         </tr>
       </thead>
       <tbody>
-        {{#each post}}
+        {{#each posts}}
         <tr class="table-light">
           <td>{{this.title}}</td>
           <td>{{this.author}}</td>
           <td>{{this.date}}</td>
-          <td><button class="btn btn-secondary" style="width: 100px;" onclick="edit({{this.rowid}})">Edit</button></td>
+          <td><button class="btn btn-secondary" style="width: 100px;" onclick="edit({{this.id}})">Edit</button></td>
         </tr>
         {{/each}}
       </tbody>
@@ -33,10 +33,10 @@
 
 <script>
   function edit(id) {
-    window.location.href = '/editpost/' + id
+    window.location.href = '/edit-post/' + id
   }
 
   function newPost(id) {
-    window.location.href = '/newPost'
+    window.location.href = '/new-post'
   }
 </script>

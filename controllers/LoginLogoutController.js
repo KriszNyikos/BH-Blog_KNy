@@ -1,8 +1,17 @@
-const AuthenticationService = require("../services/authenticationService");
 const { blogName, AUTH_COOKIE } = require("../config.json");
 
 module.exports = class LoginController {
-  static post(req, res) {
+  constructor(authenticationService) {
+    this.authenticationService = authenticationService
+  }
+
+  logoutUser(req, res) {
+    let cookieName = this.authenticationService.deleteSession(req.cookies);
+    res.clearCookie(cookieName);
+    res.redirect('/login?logoutMsg="succesfull"')
+  }
+
+  loginUser(req, res) {
     let user = req.body.user;
     let password = req.body.password;
 
@@ -20,12 +29,12 @@ module.exports = class LoginController {
         text = 'username and assword'
       }
       console.log(`Error: Missing ${text}`)
-     return res.redirect(`/login?missing="${text}"`);
+      return res.redirect(`/login?missing="${text}"`);
     }
 
-    if (AuthenticationService.userValidator(user, password)) {
+    if (this.authenticationService.userValidator(user, password)) {
       console.log("jelszó rendben");
-      const sessionId = AuthenticationService.registerSession(user);
+      const sessionId = this.authenticationService.registerSession(user);
       res.cookie(AUTH_COOKIE, sessionId);
       return res.redirect("/admin");
     }
@@ -33,7 +42,8 @@ module.exports = class LoginController {
     res.redirect('/login?error="credentials"');
   }
 
-  static get(req, res) {
+
+  renderLoginView(req, res) {
 
     if (req.query.error) {
       return res.render("loginView", {
@@ -57,4 +67,6 @@ module.exports = class LoginController {
 
     res.render("loginView");
   };
+
+
 }
