@@ -42,14 +42,11 @@ module.exports = class BlogPostRepository {
 
 
 update(data) {
-  let { id, title, content, slug, author } = data
-  
-  let updateData = [title, content, slug, author, id]
+  let updateData = [data.title, data.content, data.slug, data.id]
   let sql = `UPDATE posts
                   SET title = ?,
                   content = ?,
-                  slug = ?,
-                  author = ?
+                  slug = ?
                   WHERE rowid = ?`
 
   this.db.run(sql, updateData,
