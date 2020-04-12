@@ -3,8 +3,9 @@ const {blogName} = require('../config.json')
 
 
 module.exports = class AdminController {
-    constructor (blogPostService){
+    constructor (blogPostService, dateService){
         this.blogPostService = blogPostService
+        this.dateService = dateService
     }
     renderDashboard(req, res){
         res.render('dashBoard',{
@@ -13,7 +14,11 @@ module.exports = class AdminController {
     }
 
      async renderAdminPostList (req, res){
-        let posts = await this.blogPostService.findAllPost()
+        let postArray = await this.blogPostService.findAllPost()
+        let posts = postArray.map((post)=> {
+            post.date = this.dateService.toString(post.date)
+            return post
+          })
         res.render('adminPostListView',{
             posts
         })

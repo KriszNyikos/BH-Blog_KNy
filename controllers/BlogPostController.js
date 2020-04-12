@@ -2,15 +2,15 @@ const BlogPost = require('../modell/BlogPost')
 const { AUTH_COOKIE, blogName } = require("../config");
 
 module.exports = class BlogPostController {
-  constructor(authenticationService, blogPostService) {
+  constructor(authenticationService, blogPostService, dateService) {
     this.authenticationService = authenticationService,
-      this.blogPostService = blogPostService
+      this.blogPostService = blogPostService,
+      this.dateService = dateService
   }
 
   async renderPostView(req, res) {
     let post
     if (Number(req.params.id)) {
-      //    console.log('Az ID szám')
       post = await this.blogPostService.findPostById(req.params.id)
     } else {
       post = await this.blogPostService.findPostBySlug(req.params.id)
@@ -18,9 +18,12 @@ module.exports = class BlogPostController {
     if (!post) {
       post = { title: 'A keresett tartalom nem található' }
     }
-
+    //console.log(post)
+    post.date = this.dateService.toString(post.date)
     res.render('readPostView', { post, blogName })
   }
+
+
 
   renderNewPostView(req, res) {
     let error = req.query.error ? `Error: ${req.query.error} is required` : null
@@ -30,36 +33,36 @@ module.exports = class BlogPostController {
     });
   }
 
+
+
   saveBlogPost(req, res) {
-    let error = "";
 
     if (req.body.title && req.body.content) {
 
-      let insertPost = new BlogPost()
+      let author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
+      let insertPost = new BlogPost(undefined, author, new Date(), req.body.title, req.body.content, req.body.slug)
 
-      insertPost.author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
-      insertPost.title = req.body.title,
-      insertPost.content = req.body.content,
-      insertPost.slug = req.body.slug
       //console.log(insertPost)
       this.blogPostService.insertNewPost(insertPost);
       return res.redirect("/admin");
     }
 
     if (!req.body.title) {
-      return res.redirect('/newPost?error="Title"');
+      return res.redirect('/new-post?error="Title"');
     }
 
     if (!req.body.content) {
       return res.redirect('/new-post?error="Content"');
     }
 
-    if (!req.body.content) {
-      return res.redirect('/newPost?error="Slug"');
+    if (!req.body.slug) {
+      return res.redirect('/new-post?error="Slug"');
     }
 
     res.redirect('/');
   }
+
+
 
   updateBlogPost(req, res) {
 
@@ -68,31 +71,34 @@ module.exports = class BlogPostController {
       insertPost.id = req.body.id
       insertPost.author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
       insertPost.title = req.body.title,
-      insertPost.content = req.body.content,
-      insertPost.slug = req.body.slug
+        insertPost.content = req.body.content,
+        insertPost.slug = req.body.slug
 
       this.blogPostService.updatePost(insertPost);
       return res.redirect("/admin");
     }
 
     if (!req.body.title) {
-      return res.redirect(`/editpost/:${req.query.id}?error="Title"`);
+      return res.redirect(`/edit-post/:${req.query.id}?error="Title"`);
     }
 
     if (!req.body.content) {
-      return res.redirect(`/editpost/:${req.query.id}?error="Content"`);
+      return res.redirect(`/edit-post/:${req.query.id}?error="Content"`);
     }
 
     if (!req.body.content) {
-      return res.redirect(`/editpost/:${req.query.id}?error="Slug"`);
+      return res.redirect(`/edit-post/:${req.query.id}?error="Slug"`);
     };
 
     res.redirect('/adminPostList');
   }
 
+
+
   async renderPostEditView(req, res) {
     let post = await this.blogPostService.findPostById(req.params.id)
-    console.log(post)
+    //console.log(post)
+    post.date = this.dateService.toString(post.date)
     res.render('editPost', {
       header: 'Edit Post View',
       post,
@@ -101,8 +107,14 @@ module.exports = class BlogPostController {
     })
   }
 
+
+
   async renderMainLayout(req, res) {
-    let posts = await this.blogPostService.findAllPost();
+    let postArray = await this.blogPostService.findAllPost();
+    let posts = postArray.map((post) => {
+      post.date = this.dateService.toString(post.date)
+      return post
+    })
     res.render("main_layout", {
       posts,
       blogName

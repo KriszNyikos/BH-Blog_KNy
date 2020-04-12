@@ -12,12 +12,15 @@ const db = new sqlite3.Database("./modell/postsDB.db", (err) => {
     }
   )
 
+const DateService = require('./services/DateService')
+const dateService = new DateService()
 
 const BlogPostRepository = require('./repository/BlogPostRepository')
-const blogPostRepository = new BlogPostRepository(db) 
+const blogPostRepository = new BlogPostRepository(db, dateService) 
 
 const AuthenticationService = require('./services/AuthenticationService')
 const authenticationService = new AuthenticationService(users, sessions) 
+
 
 const BlogPostService = require('./services/BlogPostService')
 const blogPostService = new BlogPostService(blogPostRepository)
@@ -29,10 +32,10 @@ const LoginLogoutController = require('./controllers/LoginLogoutController')
 const loginLogoutController = new LoginLogoutController(authenticationService)
 
 const AdminController = require('./controllers/AdminController')
-const adminController = new AdminController(blogPostService)
+const adminController = new AdminController(blogPostService, dateService)
 
 const BlogPostController = require('./controllers/BlogPostController')
-const blogPostController = new BlogPostController(authenticationService, blogPostService)
+const blogPostController = new BlogPostController(authenticationService, blogPostService, dateService)
 
 
 
