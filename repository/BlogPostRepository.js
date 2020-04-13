@@ -16,7 +16,7 @@ module.exports = class BlogPostRepository {
             if (err) {
               reject(err);
             }
-            result = result.map(row => new BlogPost(row.rowid, row.author, row.date = !row.date ? undefined : new Date(row.date), row.title, row.content, row.slug))
+            result = result.map(row => new BlogPost(row.rowid, row.author, row.date = !row.date ? row.date : new Date(row.date), row.title, row.content, row.slug))
             //console.log(result)
             resolve(result);
           });
@@ -48,9 +48,14 @@ module.exports = class BlogPostRepository {
 
 
   update(data) {
-    let updateData = [data.title, data.content, data.slug, data.id]
+    let {id, date, title, content, slug} = data
+    
+    date = date ? this.dateService.toISO(data.date) : null
+
+    let updateData = [title, date, content, slug, id]
     let sql = `UPDATE posts
                   SET title = ?,
+                  date= ?, 
                   content = ?,
                   slug = ?
                   WHERE rowid = ?`

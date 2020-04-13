@@ -4,7 +4,7 @@
             <div class="row justify-content-md-center">
                 <h1 class="col-6">{{header}}</h1>
             </div>
-            <form  action='/edit-post' onsubmit='formCheck()' method='POST'>
+            <form  action='/edit-post/{{post.id}}' onsubmit="formCheck()" method='POST'>
                 <input type="hidden" name='id' value='{{post.id}}'>
                 <div class="form-group">
                     <label for="title">Title</label>
@@ -21,10 +21,10 @@
                 <div class="container">
                 <div class="row justify-content-start">
                     <a data-toggle="modal" class='btn btn-secondary text-light' data-target="#modal"> Discard </a>
-                    <button class='btn btn-secondary ml-2' formaction='/edit-post?draft="true"'>Save as draft</button>
-                    <button class='btn btn-secondary ml-2'>Edit </button>
+                    <button class='btn btn-secondary ml-2' formaction='/edit-post/{{post.id}}?draft="true"'>Save as draft</button>
+                    <button class='btn btn-secondary ml-2'>Publish</button>
                 </div>
-                {{#if error}}<div class="row" style="color: red;" id="errorMsg">{{error}}</div>{{/if}}
+                <div class="row" style="color: red;" id="errorMsg">{{error}}</div>
             </div>
             </form>
         </div>

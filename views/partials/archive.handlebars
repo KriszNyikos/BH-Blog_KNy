@@ -1,0 +1,18 @@
+<div>
+    <ul> {{#each testObject}}
+        <li>{{this.year}}</li>
+        <li>
+            <ul>
+                {{#each this.months}}
+                    <li>{{@key}}</li>
+                    <ul>
+                        {{#each this}}
+                            {{this}}
+                        {{/each}}
+                    </ul>
+                {{/each}}
+            </ul>
+        </li>
+        {{/each}}
+    </ul>
+</div>

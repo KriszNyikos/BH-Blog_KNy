@@ -18,7 +18,7 @@
         <tr class="table-light">
           <td>{{this.title}}</td>
           <td>{{this.author}}</td>
-          <td>{{this.date}}</td>
+          <td>{{#if this.date}} {{this.date}} {{else}} N/A {{/if}}</td>
           <td><button class="btn btn-secondary" style="width: 100px;" onclick="edit({{this.id}})">Edit</button></td>
         </tr>
         {{/each}}

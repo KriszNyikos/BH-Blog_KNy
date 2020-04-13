@@ -1,39 +1,10 @@
 
-<!--
-<div class="container">
-    <div class="row justify-content-md-center">
-        <div class="col-8 ">
-            <div class="row justify-content-md-center">
-                <h1 class="col-6">{{header}}</h1>
-            </div>
-            <form  {{#if editor}} action='/edit-post/{{post.id}}' {{else}} action='/new-post' {{/if}} onsubmit='formCheck()' method='POST'>
-                <input type="hidden" name='id' value='{{post.id}}'>
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="Title" {{#if post.title}} value="{{post.title}}" {{/if}}>
-                </div>
-                <div class="form-group">
-                    <label for="title">Slug</label>
-                    <input type="text" class="form-control" id="slug" name="slug" placeholder="lorem-ipsum" {{#if post.slug}} value="{{post.slug}}" {{/if}}>
-                </div>
-                <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea class="form-control" id="content" name="content" rows="10">{{post.content}}</textarea>
-                </div>
-                <div class="container">
-                <div class="row justify-content-start">
-                    <a data-toggle="modal" class='btn btn-secondary text-light' data-target="#modal"> Discard </a>
-                    <button class='btn btn-secondary ml-2' formaction='/edit-post{{post.id}}?draft="true"'>Save as draft</button>
-                    <button class='btn btn-secondary ml-2'>{{#if editor}} Edit {{else}} Publish {{/if}}</button>
-                </div>
-                {{#if error}}<div class="row" style="color: red;" id="errorMsg">{{error}}</div>{{/if}}
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
--->
-{{#if editor}} {{>edit_post}} {{else}} {{>new_post}} {{/if}}
+{{#if editor}} 
+    {{>edit_post}} 
+{{else}} 
+    {{>new_post}} 
+{{/if}}
+
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -54,6 +25,7 @@
 <script>
 
 function formCheck() {
+    console.log('belép a checkbe')
     let title = document.getElementById('title').value
     let content = document.getElementById('content').value
     let slug = document.getElementById('slug').value
@@ -61,7 +33,9 @@ function formCheck() {
 
         let errorMessage = document.getElementById('errorMsg')
         errorMessage.innerText = ''
+
         if (!title || !slug || !content) {
+
             if (!title) {
                 errorMessage.innerText = 'Title '
             }
@@ -86,14 +60,11 @@ function formCheck() {
                 errorMessage.innerText += ' are required '
             } else {
                 errorMessage.innerText += 'is required'
-
-
             }
             event.preventDefault();
             
             return false
         }
-        return true
     }
 
 
