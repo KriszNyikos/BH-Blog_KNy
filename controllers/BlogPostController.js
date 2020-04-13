@@ -125,7 +125,6 @@ module.exports = class BlogPostController {
       postArray = await this.blogPostService.findByWord(req.body.keyword);
       archiveArray = await this.blogPostService.findAllPost();
       keyword = req.body.keyword
-      //console.log('Keyword:', keyword)
     } else {
       postArray = await this.blogPostService.findAllPost();
       archiveArray = postArray
@@ -139,8 +138,7 @@ module.exports = class BlogPostController {
     let archive = this.blogPostService.sortDateDESC(archiveArray)
     archive = archive.filter(post => post.date)
     archive = this.blogPostService.archiveList(archive)
-   // console.log(archive)
-    // console.log(posts)
+
     
     res.render("main_layout", {
       posts,
