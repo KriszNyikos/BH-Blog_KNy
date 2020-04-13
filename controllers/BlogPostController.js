@@ -15,7 +15,7 @@ module.exports = class BlogPostController {
     } else {
       post = await this.blogPostService.findPostBySlug(req.params.id)
     }
-    if (!post) {
+    if (!post || !post.date) {
       post = { title: 'A keresett tartalom nem található' }
     }
     //console.log(post)
@@ -37,10 +37,16 @@ module.exports = class BlogPostController {
 
   saveBlogPost(req, res) {
 
-    if (req.body.title && req.body.content) {
+ 
+    if (req.body.title && req.body.content && req.body.slug) {
+
 
       let author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
-      let insertPost = new BlogPost(undefined, author, new Date(), req.body.title, req.body.content, req.body.slug)
+      let insertPost = new BlogPost(null, author, new Date(), req.body.title, req.body.content, req.body.slug)
+
+      if(req.query.draft){
+        insertPost.date = null
+      }  
 
       //console.log(insertPost)
       this.blogPostService.insertNewPost(insertPost);
@@ -62,17 +68,20 @@ module.exports = class BlogPostController {
     res.redirect('/');
   }
 
-
+ 
 
   updateBlogPost(req, res) {
 
-    if (req.body.title && req.body.content) {
-      let insertPost = new BlogPost()
-      insertPost.id = req.body.id
-      insertPost.author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
-      insertPost.title = req.body.title,
-        insertPost.content = req.body.content,
-        insertPost.slug = req.body.slug
+
+    if (req.body.title && req.body.content && req.body.slug) {
+
+
+      let author = this.authenticationService.returnAuthor(req.cookies[AUTH_COOKIE]);
+      let insertPost = new BlogPost(req.body.id, author, new Date(), req.body.title, req.body.content, req.body.slug)
+
+      if(req.query.draft){
+        insertPost.date = null
+      } 
 
       this.blogPostService.updatePost(insertPost);
       return res.redirect("/admin");
@@ -86,7 +95,7 @@ module.exports = class BlogPostController {
       return res.redirect(`/edit-post/:${req.query.id}?error="Content"`);
     }
 
-    if (!req.body.content) {
+    if (!req.body.slug) {
       return res.redirect(`/edit-post/:${req.query.id}?error="Slug"`);
     };
 
@@ -111,10 +120,9 @@ module.exports = class BlogPostController {
 
   async renderMainLayout(req, res) {
     let postArray = await this.blogPostService.findAllPost();
-    let posts = postArray.map((post) => {
-      post.date = this.dateService.toString(post.date)
-      return post
-    })
+    let posts = postArray.map(post=> new BlogPost(post.id, post.author,this.dateService.toString(post.date), post.title, post.content, post.slug ))
+    console.log(posts)
+    posts = posts.filter(post => post.date)
     res.render("main_layout", {
       posts,
       blogName

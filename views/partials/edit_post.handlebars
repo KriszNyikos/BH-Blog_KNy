@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-8 ">
+            <div class="row justify-content-md-center">
+                <h1 class="col-6">{{header}}</h1>
+            </div>
+            <form  action='/edit-post' onsubmit='formCheck()' method='POST'>
+                <input type="hidden" name='id' value='{{post.id}}'>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Title" value="{{post.title}}" >
+                </div>
+                <div class="form-group">
+                    <label for="title">Slug</label>
+                    <input type="text" class="form-control" id="slug" name="slug" placeholder="lorem-ipsum" value="{{post.slug}}">
+                </div>
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea class="form-control" id="content" name="content" rows="10">{{post.content}}</textarea>
+                </div>
+                <div class="container">
+                <div class="row justify-content-start">
+                    <a data-toggle="modal" class='btn btn-secondary text-light' data-target="#modal"> Discard </a>
+                    <button class='btn btn-secondary ml-2' formaction='/edit-post?draft="true"'>Save as draft</button>
+                    <button class='btn btn-secondary ml-2'>Edit </button>
+                </div>
+                {{#if error}}<div class="row" style="color: red;" id="errorMsg">{{error}}</div>{{/if}}
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

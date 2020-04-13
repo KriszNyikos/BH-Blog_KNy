@@ -1,3 +1,5 @@
+
+<!--
 <div class="container">
     <div class="row justify-content-md-center">
         <div class="col-8 ">
@@ -21,6 +23,7 @@
                 <div class="container">
                 <div class="row justify-content-start">
                     <a data-toggle="modal" class='btn btn-secondary text-light' data-target="#modal"> Discard </a>
+                    <button class='btn btn-secondary ml-2' formaction='/edit-post{{post.id}}?draft="true"'>Save as draft</button>
                     <button class='btn btn-secondary ml-2'>{{#if editor}} Edit {{else}} Publish {{/if}}</button>
                 </div>
                 {{#if error}}<div class="row" style="color: red;" id="errorMsg">{{error}}</div>{{/if}}
@@ -29,7 +32,8 @@
         </div>
     </div>
 </div>
-
+-->
+{{#if editor}} {{>edit_post}} {{else}} {{>new_post}} {{/if}}
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

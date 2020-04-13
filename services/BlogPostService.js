@@ -5,9 +5,6 @@ module.exports = class BlogPostService {
   }
 
 
-
-
-
    insertNewPost(insertPost) {
     this.blogPostRepository.insert(insertPost);
   }
@@ -18,8 +15,9 @@ module.exports = class BlogPostService {
 
 
    findAllPost() {
-    return this.blogPostRepository.findAll()
-  }
+      return this.blogPostRepository.findAll()
+   }
+
 
    findPostById(id) {
     return this.blogPostRepository.findById(id)
