@@ -119,16 +119,18 @@ module.exports = class BlogPostController {
   async renderMainLayout(req, res) {
     let postArray
     let archiveArray
+    let keyword
 
     if(req.body.keyword){
       postArray = await this.blogPostService.findByWord(req.body.keyword);
       archiveArray = await this.blogPostService.findAllPost();
+      keyword = req.body.keyword
+      //console.log('Keyword:', keyword)
     } else {
       postArray = await this.blogPostService.findAllPost();
       archiveArray = postArray
     }
 
-   // console.log('Archivearray:',archiveArray)
 
     let posts = this.blogPostService.sortDateDESC(postArray)
     posts = posts.filter(post => post.date)
@@ -137,13 +139,14 @@ module.exports = class BlogPostController {
     let archive = this.blogPostService.sortDateDESC(archiveArray)
     archive = archive.filter(post => post.date)
     archive = this.blogPostService.archiveList(archive)
-    console.log(archive)
+   // console.log(archive)
     // console.log(posts)
     
     res.render("main_layout", {
       posts,
       blogName,
-      archive
+      archive,
+      keyword
     });
   }
 };

@@ -49,13 +49,13 @@ module.exports = class BlogPostService {
 
   }
 
-  async archiveList(array) {
+   archiveList(array) {
 
       let obj = {}
       const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
       ];
-      
+
       try {
         array.forEach(element => {
           if (!obj[element.date.getFullYear()]) {
