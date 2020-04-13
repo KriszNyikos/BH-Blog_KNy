@@ -1,50 +1,13 @@
 const BlogPost = require('../modell/BlogPost')
 const { AUTH_COOKIE, blogName } = require("../config");
 
-const testObject = [
-  {
-    "year": 2020,
-    "months": {
-      "January": {
-        1: "How to kung fu",
-        2: "Habiszti"
-      },
-      "February": {
-        1: "How to kung fu",
-        2: "Habiszti"
-      },
-      "March": {
-        1: "How to kung fu",
-        2: "Habiszti"
-      }
-    }
 
-  },
-
-  {
-    "year": 2019,
-    "months": {
-      "January": {
-        1: "How to kung fu",
-        2: "Habiszti"
-      },
-      "February": {
-        1: "How to kung fu",
-        2: "Habiszti"
-      },
-      "March": {
-        1: "How to kung fu",
-        2: "Habiszti"
-      }
-    }
-
-  }
-]
 module.exports = class BlogPostController {
-  constructor(authenticationService, blogPostService, dateService) {
+  constructor(authenticationService, blogPostService, dateService, archiveService) {
     this.authenticationService = authenticationService,
       this.blogPostService = blogPostService,
       this.dateService = dateService
+    this.archiveService = archiveService
   }
 
   async renderPostView(req, res) {
@@ -109,7 +72,6 @@ module.exports = class BlogPostController {
 
   updateBlogPost(req, res) {
 
-
     if (req.body.title && req.body.content && req.body.slug) {
 
 
@@ -154,16 +116,37 @@ module.exports = class BlogPostController {
   }
 
 
-
   async renderMainLayout(req, res) {
-    let postArray = await this.blogPostService.findAllPost();
-    let posts = postArray.map(post => new BlogPost(post.id, post.author, this.dateService.toString(post.date), post.title, post.content, post.slug))
-    // console.log(posts)
+    let postArray
+    let archiveArray
+    let keyword
+
+    if(req.body.keyword){
+      postArray = await this.blogPostService.findByWord(req.body.keyword);
+      archiveArray = await this.blogPostService.findAllPost();
+      keyword = req.body.keyword
+      //console.log('Keyword:', keyword)
+    } else {
+      postArray = await this.blogPostService.findAllPost();
+      archiveArray = postArray
+    }
+
+
+    let posts = this.blogPostService.sortDateDESC(postArray)
     posts = posts.filter(post => post.date)
+    posts = posts.map(post => new BlogPost(post.id, post.author, this.dateService.toString(post.date), post.title, post.content, post.slug))
+    
+    let archive = this.blogPostService.sortDateDESC(archiveArray)
+    archive = archive.filter(post => post.date)
+    archive = this.blogPostService.archiveList(archive)
+   // console.log(archive)
+    // console.log(posts)
+    
     res.render("main_layout", {
       posts,
       blogName,
-      testObject
+      archive,
+      keyword
     });
   }
 };

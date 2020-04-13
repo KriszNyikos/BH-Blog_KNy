@@ -1,13 +1,14 @@
-<div>
-    <ul> {{#each testObject}}
-        <li>{{this.year}}</li>
+<div>Archive</div>
+<div style="font-size: small;">
+    <ul style="list-style-type: none;" class=" container-fluid mt-2"> {{#each archive}}
+        <li>{{@key}}</li>
         <li>
-            <ul>
-                {{#each this.months}}
+            <ul style="list-style-type: none;">
+                {{#each this}}
                     <li>{{@key}}</li>
                     <ul>
                         {{#each this}}
-                            {{this}}
+                           <a href="/post-view/{{@key}}">{{this}}</a><br>
                         {{/each}}
                     </ul>
                 {{/each}}

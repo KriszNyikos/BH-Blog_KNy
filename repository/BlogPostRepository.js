@@ -69,6 +69,26 @@ module.exports = class BlogPostRepository {
     );
 
   }
+  
+  findByWord(word){
+    return new Promise((resolve, reject) => {
+      this.db.serialize(() => {
+        this.db.all(
+          `SELECT rowid, author, date, title, content FROM posts
+            WHERE author LIKE '%${word}%' 
+            OR title LIKE '%${word}%'
+            OR content LIKE '%${word}%'`,
+          function (err, result) {
+            if (err) {
+              reject(err);
+            }
+            result = result.map(row => new BlogPost(row.rowid, row.author, row.date = !row.date ? row.date : new Date(row.date), row.title, row.content, row.slug))
+            console.log(result)
+            resolve(result);
+          });
+      })
+    });
+  }
 
   findById(id) {
     return new Promise((resolve, reject) => {

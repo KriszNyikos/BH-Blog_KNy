@@ -21,7 +21,6 @@ const blogPostRepository = new BlogPostRepository(db, dateService)
 const AuthenticationService = require('./services/AuthenticationService')
 const authenticationService = new AuthenticationService(users, sessions) 
 
-
 const BlogPostService = require('./services/BlogPostService')
 const blogPostService = new BlogPostService(blogPostRepository)
 
@@ -61,6 +60,8 @@ app.use(express.json())
 app.use(express.static('public'))
 
 app.get('/', blogPostController.renderMainLayout.bind(blogPostController))
+
+app.post('/', blogPostController.renderMainLayout.bind(blogPostController))
 
 app.get('/login', loginLogoutController.renderLoginView.bind(loginLogoutController))
 
