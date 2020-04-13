@@ -1,10 +1,20 @@
-{{#each posts}}
-<div class="card mt-2">
-    <div class="card-body">
-        <div class="d-flex justify-content-between">
-            <a href="/post-view/{{this.id}}">{{this.title}} (by:{{this.author}})</a>
-            <div>{{this.date}}</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            {{>archive}}
+        </div>
+        <div class="col-9">
+            {{#each posts}}
+            <div class="card mt-2">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <a href="/post-view/{{this.id}}">{{this.title}} (by:{{this.author}})</a>
+                        <div>{{this.date}}</div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
         </div>
     </div>
+
 </div>
-{{/each}}

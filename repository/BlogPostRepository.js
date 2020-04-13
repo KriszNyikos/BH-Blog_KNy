@@ -16,7 +16,8 @@ module.exports = class BlogPostRepository {
             if (err) {
               reject(err);
             }
-            result = result.map(row => new BlogPost(row.rowid, row.author, new Date(row.date), row.title, row.content, row.slug))
+            result = result.map(row => new BlogPost(row.rowid, row.author, row.date = !row.date ? row.date : new Date(row.date), row.title, row.content, row.slug))
+            //console.log(result)
             resolve(result);
           });
       })
@@ -24,9 +25,14 @@ module.exports = class BlogPostRepository {
   }
 
   insert(data) {
+    let {author, date, title, content, slug} = data
+
+    date = date ? this.dateService.toISO(data.date) : null
+    console.log(date)
+
     this.db.serialize(() => {
       let sql = `INSERT INTO posts(author, date, title, content, slug) VALUES (?,?,?,?,?)`
-      let datas = [data.author, this.dateService.toISO(data.date), data.title, data.content, data.slug]
+      let datas = [author, data, title, content, slug]
       this.db.run(
         sql,
         datas,
@@ -42,9 +48,14 @@ module.exports = class BlogPostRepository {
 
 
   update(data) {
-    let updateData = [data.title, data.content, data.slug, data.id]
+    let {id, date, title, content, slug} = data
+    
+    date = date ? this.dateService.toISO(data.date) : null
+
+    let updateData = [title, date, content, slug, id]
     let sql = `UPDATE posts
                   SET title = ?,
+                  date= ?, 
                   content = ?,
                   slug = ?
                   WHERE rowid = ?`
@@ -69,8 +80,9 @@ module.exports = class BlogPostRepository {
               // hibakezelés
               reject(err.message);
             }
+            console.log(result)
             let post = result.find(row => new BlogPost(row.rowid, row.author, row.date, row.title, row.content, row.slug))
-            post.date = new Date(post.date)
+            post.date = !post.date ? null : new Date(post.date)
 
             resolve(post);
           }
