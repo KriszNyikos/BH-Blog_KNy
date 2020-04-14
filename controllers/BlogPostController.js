@@ -130,7 +130,6 @@ module.exports = class BlogPostController {
       archiveArray = postArray
     }
 
-
     let posts = this.blogPostService.sortDateDESC(postArray)
     posts = posts.filter(post => post.date)
     posts = posts.map(post => new BlogPost(post.id, post.author, this.dateService.toString(post.date), post.title, post.content, post.slug))

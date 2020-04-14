@@ -1,16 +1,22 @@
 
+const {dbPath} = require('./config.json')
+
 const users = [{ user: "admin", password: "password" }, { user: "admin2", password: "password2" }];
 const sessions = {};
 
 const sqlite3 = require("sqlite3").verbose(); 
 
-const db = new sqlite3.Database("./modell/postsDB.db", (err) => {
+const db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
         return console.error(err.message);
       }
       console.log("Connected to the postsDB database.");
     }
   )
+
+
+const DbConfigController = require('./controllers/DbConfigController')
+const dbConfigController = new DbConfigController()
 
 const DateService = require('./services/DateService')
 const dateService = new DateService()
@@ -68,6 +74,10 @@ app.get('/login', loginLogoutController.renderLoginView.bind(loginLogoutControll
 app.post('/login', loginLogoutController.loginUser.bind(loginLogoutController))
 
 app.get('/logout', loginLogoutController.logoutUser.bind(loginLogoutController))
+
+app.get('/db-config', authMiddleware.sessionValidator.bind(authMiddleware), dbConfigController.renderConfig.bind(dbConfigController))
+
+app.post('/db-config', authMiddleware.sessionValidator.bind(authMiddleware), dbConfigController.changePath.bind(dbConfigController))
 
 app.get('/admin', authMiddleware.sessionValidator.bind(authMiddleware), adminController.renderDashboard.bind(adminController))
 

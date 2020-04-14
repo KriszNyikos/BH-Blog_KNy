@@ -1,0 +1,17 @@
+
+    <div class="container pt-5" style="height: 600px;">
+        <div class="row justify-content-md-center h-50">
+            <div class="col-md-auto text-center border rounded">
+                <div>
+                   <p>Jelenlegi elérési útvonal: </p><br>
+                   <p>{{path}}</p>
+                </div>
+                <hr>
+                <p>Új elérési útvonal megadása megadása</p>
+                <form action="/db-config" method="POST">
+                <input type="text" name="path" id="path"><br>
+                <button class=" btn btn-sm btn-secondary mt-2">Change</button>
+                </form>
+            </div>
+        </div>
+    </div>
