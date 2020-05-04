@@ -1,4 +1,4 @@
-const { blogName } = require('../config.json')
+const { blogName, dbPath } = require('../config.json')
 // A blog nevét megjeleníteni  Handlebars-ban
 
 
@@ -22,6 +22,12 @@ module.exports = class AdminController {
         })
         res.render('adminPostListView', {
             posts
+        })
+    }
+
+    renderDbView(req, res){
+        res.render('adminDbView', {
+        dbPath
         })
     }
 }

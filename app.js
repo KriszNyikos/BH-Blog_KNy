@@ -1,7 +1,8 @@
 
 const users = [{ user: "admin", password: "password" }, { user: "admin2", password: "password2" }];
 const sessions = {};
-
+db = require("./services/dbService")
+/*
 const sqlite3 = require("sqlite3").verbose(); 
 
 const db = new sqlite3.Database("./modell/postsDB.db", (err) => {
@@ -11,6 +12,7 @@ const db = new sqlite3.Database("./modell/postsDB.db", (err) => {
       console.log("Connected to the postsDB database.");
     }
   )
+*/
 
 const DateService = require('./services/DateService')
 const dateService = new DateService()
@@ -82,5 +84,7 @@ app.post('/edit-post/:id', authMiddleware.sessionValidator.bind(authMiddleware),
 app.get('/post-view/:id', blogPostController.renderPostView.bind(blogPostController))
 
 app.get('/admin-post-list', authMiddleware.sessionValidator.bind(authMiddleware), adminController.renderAdminPostList.bind(adminController))
+
+app.get('/admin-database', authMiddleware.sessionValidator.bind(authMiddleware), adminController.renderDbView.bind(adminController))
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

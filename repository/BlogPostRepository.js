@@ -1,4 +1,5 @@
 const BlogPost = require('../modell/BlogPost')
+const {dbPath} = require('../config.json')
 
 
 module.exports = class BlogPostRepository {
@@ -9,17 +10,20 @@ module.exports = class BlogPostRepository {
 
   findAll() {
     return new Promise((resolve, reject) => {
-      this.db.serialize(() => {
-        this.db.all(
+      const db = this.db(dbPath)
+      let resultArr = []
+      db.serialize(() => {
+        db.all(
           "SELECT rowid, author, date, title, content FROM posts",
           function (err, result) {
             if (err) {
               reject(err);
             }
-            result = result.map(row => new BlogPost(row.rowid, row.author, row.date = !row.date ? row.date : new Date(row.date), row.title, row.content, row.slug))
+            resultArr = result.map(row => new BlogPost(row.rowid, row.author, row.date = !row.date ? row.date : new Date(row.date), row.title, row.content, row.slug))
             //console.log(result)
-            resolve(result);
+            resolve(resultArr);
           });
+          
       })
     });
   }

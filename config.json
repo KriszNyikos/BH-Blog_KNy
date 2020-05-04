@@ -1,4 +1,5 @@
 {
     "blogName" : "Blog oldal",
-    "AUTH_COOKIE": "ssid"
+    "AUTH_COOKIE": "ssid",
+    "dbPath": "./modell/postsDB.db"
 }
