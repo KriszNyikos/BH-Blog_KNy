@@ -4,10 +4,10 @@
             <p class="lead">Here you can add a new path of the database</p>
             <p>Current path: {{dbPath}}</p>
             <hr class="my-4">
-            <form>
+            <form formaction="/admin-database" method="POST">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1">
+                    <label for="path">New path</label>
+                    <input type="text" name="path" class="form-control" id="path">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>

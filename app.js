@@ -87,4 +87,7 @@ app.get('/admin-post-list', authMiddleware.sessionValidator.bind(authMiddleware)
 
 app.get('/admin-database', authMiddleware.sessionValidator.bind(authMiddleware), adminController.renderDbView.bind(adminController))
 
+app.post('/admin-database', authMiddleware.sessionValidator.bind(authMiddleware), adminController.updateDbPath.bind(adminController))
+
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

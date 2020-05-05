@@ -45,11 +45,11 @@ const posts = [
         slug: 'ha-egyszer-en'
     }
 ]
-
+/*
 db.serialize(function () {
     db.run("DROP TABLE posts");
 
-})
+})*/
 
 db.serialize(function () {
     db.run("CREATE TABLE posts('author' TEXT, 'date' TEXT, 'title' TEXT, 'content' TEXT, slug TEXT);");
@@ -69,4 +69,12 @@ db.serialize(function () {
         }
        // console.log(result)
     })
+
+    db.close((err) => {
+        if (err) {
+          return console.error(err.message);
+        }
+        console.log(`Close the database connection. File: ${dbPath}`);
+      });
 })
+
